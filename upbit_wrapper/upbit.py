@@ -1,4 +1,4 @@
-# https://docs.upbit.com/reference
+# https://docs.upbit.com/
 
 import os
 import sys
@@ -22,7 +22,8 @@ class Upbit:
 
     def __connect(self,method,api_path, **kwargs):
         """
-        request 
+        [Description]
+        request 요청
         """
         url = urljoin(self.server_url,api_path)
         self.logger.debug(f"connect to {url}")
@@ -36,6 +37,7 @@ class Upbit:
 
     def __make_headers(self,payload):
         """
+        [Description]
         make authorize_token and headers
         """
         jwt_token = jwt.encode(payload, self.secret_key).decode('utf-8')
@@ -45,6 +47,7 @@ class Upbit:
 
     def __make_query_hash(self,query):
         """
+        [Description]
         make query hash
         """
         query_string = urlencode(query).encode()
@@ -438,7 +441,7 @@ class Upbit:
         amount(string) : 출금 원화 수량
 
         [Usage]
-        withdraws_krw()
+        withdraws_krw(amount='10000')
         """
         query = {}
         for item in kwargs.items():
