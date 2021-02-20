@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name              = 'upbit_wrapper',
-    version           = '0.0.2',
+    version           = '0.0.4',
     description       = 'Python wrapper for upbit',
     long_description  = open('README.md','rt').read(),
     author            = 'BS LEE',
