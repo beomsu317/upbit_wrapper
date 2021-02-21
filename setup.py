@@ -3,9 +3,10 @@ from setuptools import find_packages, setup
 
 setup(
     name              = 'upbit_wrapper',
-    version           = '0.0.3',
+    version           = '0.0.5',
     description       = 'Python wrapper for upbit',
     long_description  = open('README.md','rt').read(),
+    long_description_content_type='text/markdown',
     author            = 'BS LEE',
     author_email      = 'beomsu317@gmail.com',
     url               = 'https://github.com/beomsu317/upbit_wrapper',
