@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 from requests.api import head
 
 class Upbit:
-    def __init__(self,access_key,secret_key):
+    def __init__(self,access_key=None,secret_key=None):
         self.logger = logging.getLogger("Upbit")
         self.server_url = "https://api.upbit.com"
         self.access_key = access_key
