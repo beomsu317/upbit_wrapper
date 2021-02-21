@@ -16,8 +16,8 @@ class Upbit:
     def __init__(self,access_key,secret_key):
         self.logger = logging.getLogger("Upbit")
         self.server_url = "https://api.upbit.com"
-        self.access_key = "3WgvdXznDQzIJGhREHJiC64coZbdAfDCIOyXpyB1"
-        self.secret_key = "ncaJMITyeSt0AQxGdQcj1x8a8FV9nKDLGmsFmKcs"
+        self.access_key = access_key
+        self.secret_key = secret_key
         self.auth_token = None
 
     def __connect(self,method,api_path, **kwargs):

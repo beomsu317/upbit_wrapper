@@ -3,3 +3,4 @@ upbit_wrapper.egg-info
 upbit.egg-info
 dist
 build
+main.py
