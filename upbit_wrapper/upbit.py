@@ -1013,7 +1013,7 @@ class Upbit:
         Parameters
         ---------- 
         unit : int32
-            분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
+            분 단위. 가능한 값 : 1, 3, 5, 10, 15, 30, 60, 240
         market : string
             마켓 코드 (ex. KRW-BTC)
         to : string
