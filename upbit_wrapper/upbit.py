@@ -21,9 +21,25 @@ class Upbit:
         self.auth_token = None
 
     def __connect(self,method,api_path, **kwargs):
-        """
-        [Description]
-        내부에서 사용하는 request 요청
+        """api_path로 요청하는 request의 response 반환
+
+        Parameters
+        ---------- 
+        method : str
+            HTTP 메소드
+
+        api_path : str
+            API 경로
+
+        
+        Returns
+        -------
+        requests.models.Response
+            요청에 대한 응답
+
+        Example
+        -------
+        __connect('POST','/v1/accounts')
         """
         url = urljoin(self.server_url,api_path)
         res = requests.request(method=method, url=url, **kwargs)
@@ -35,9 +51,22 @@ class Upbit:
             return False
 
     def __make_headers(self,payload):
-        """
-        [Description]
-        make authorize_token and headers
+        """authorize_token 및 headers 생성
+        
+        Parameters
+        ---------- 
+        payload : str
+            access_key, query 등 추가된 페이로드
+        
+        Returns
+        -------
+        dictionary 
+            Auth 추가된 헤더
+
+        Example
+        -------
+        __make_headers(payload = payload)
+
         """
         jwt_token = jwt.encode(payload, self.secret_key).decode('utf-8')
         authorize_token = 'Bearer {}'.format(jwt_token)
@@ -45,9 +74,21 @@ class Upbit:
         return headers
 
     def __make_query_hash(self,query_string):
-        """
-        [Description]
-        make query hash
+        """query의 hash 생성
+
+        Parameters
+        ---------- 
+        query_string : str
+            인코딩된 쿼리 스트링
+        
+        Returns
+        -------
+        str
+            해시된 쿼리 스트링
+        
+        Example
+        -------
+        __make_headers(payload = payload)
         """
         m = hashlib.sha512()
         m.update(query_string)
@@ -57,11 +98,15 @@ class Upbit:
     EXCHANGE API
     '''
     def accounts(self):
-        """
-        [Description]
-        내가 보유한 자산 리스트를 보여준다.
+        """내가 보유한 자산 리스트를 보여줌
 
-        [Usage]
+        Returns
+        -------
+        json
+            자산 리스트            
+        
+        Example
+        -------
         ub.accounts()
         """
         payload = {
@@ -80,14 +125,20 @@ class Upbit:
             return False
 
     def order_chance(self,**kwargs):
-        """
-        [Description]
-        마켓 별 주문 가능 정보를 확인한다.
+        """마켓 별 주문 가능 정보를 확인
 
-        [Params]
-        market(string) : Market ID
-
-        [Usage]
+        Parameters
+        ---------- 
+        market : string
+            Market ID
+        
+        Returns
+        -------
+        json
+            마켓 별 주문 가능한 정보
+        
+        Example
+        -------
         ub.order_chance(market="KRW-BTC")
         """
         query = {}
@@ -116,18 +167,26 @@ class Upbit:
 
     
     def order(self,**kwargs):
-        """
-        [Description]
-        주문 UUID 를 통해 개별 주문건을 조회한다.
+        """주문 UUID 를 통해 개별 주문 건을 조회
 
-        [Params]
-        uuid(string) : 주문 UUID
-        identifier(string) : 조회용 사용자 지정 값
-
-        [Usage]
+        Parameters
+        ---------- 
+        uuid : string
+            주문 UUID
+        identifier : string
+            조회용 사용자 지정 값
+        
+        Returns
+        -------
+        json
+            개별 주문 건 정보
+        
+        Example
+        -------
         ub.orders(uuid='uuid')
 
-        [Warning]
+        Warning
+        -------
         uuid 혹은 identifier 둘 중 하나의 값이 반드시 포함되어야 함
         """
         query = {}
@@ -155,21 +214,34 @@ class Upbit:
             return False
 
     def lists_orders(self,**kwargs):
-        """
-        [Description]
-        주문 리스트를 조회한다.
+        """주문 리스트를 조회
 
-        [Params]
-        market(string) : Market ID
-        state(string) : 주문 상태
-        states(array of strings) : 주문 상태 목록
-        uuids(array of strings) : 주문 UUID의 목록
-        identifiers(array of strings) : 주문 identifier의 목록
-        page(int32) : 요청 페이지
-        limit(int32) : 요청 개수 (1 ~ 100)
-        order_by(string) : 정렬
-
-        [Usage]
+        Parameters
+        ---------- 
+        market : string
+            Market ID
+        state : string
+            주문 상태
+        states : array of strings
+            주문 상태 목록
+        uuids : array of strings
+            주문 UUID의 목록
+        identifiers : array of strings
+            주문 identifier의 목록
+        page : int32
+            요청 페이지
+        limit : int32
+            요청 개수 (1 ~ 100)
+        order_by : string
+            정렬
+        
+        Returns
+        -------
+        json
+            주문 리스트 정보
+        
+        Example
+        -------
         ub.lists_orders(state='done')
         """
 
@@ -210,18 +282,26 @@ class Upbit:
             return False
 
     def cancel_order(self, **kwargs):
-        """
-        [Description]
-        주문 UUID를 통해 해당 주문에 대한 취소 접수를 한다.
+        """주문 UUID를 통해 해당 주문에 대한 취소 접수
 
-        [Params]
-        uuid(string) : 주문 UUID
-        identifier(string) : 조회용 사용자 지정 값
-
-        [Usage]
+        Parameters
+        ---------- 
+        uuid : string
+            주문 UUID
+        identifier : string
+            조회용 사용자 지정 값
+        
+        Returns
+        -------
+        json
+            주문에 대한 취소 접수 결과
+        
+        Example
+        -------
         ub.cancel_order(uuid='uuid')
 
-        [Warning]
+        Warning
+        -------
         uuid 혹은 identifier 둘 중 하나의 값이 반드시 포함되어야 함
         """
         query = {}
@@ -249,22 +329,35 @@ class Upbit:
             return False
 
     def orders(self,**kwargs):
-        """
-        [Description]
-        주문 요청을 한다.
+        """주문 요청
 
-        [Params]
-        market(string) : Market ID
-        side(string) : 주문 종류
-        volume(string) : 주문 수량
-        price(string) : 유닛당 주문 가격
-        ord_type(string) : 주문 타입
-        identifier(string) : 조회용 사용자 지정 값
-
-        [Usage]
+        Parameters
+        ---------- 
+        market : string
+            Market ID
+        side : string
+            주문 종류
+        volume : string
+            주문 수량
+        price : string
+            유닛당 주문 가격
+        ord_type : string
+            주문 타입
+        identifier : string
+            조회용 사용자 지정 값
+        
+        Returns
+        -------
+        json
+            주문 요청 접수 결과
+        
+        Example
+        -------
         ub.orders(market = 'KRW-BTC', side ='bid', volume = '0.01', price = '100.0',ord_type = 'limit')
 
-        [Warnings]
+
+        Warnings
+        --------
         원화 마켓 가격 단위를 확인하세요.
         원화 마켓에서 주문을 요청 할 경우, 원화 마켓 주문 가격 단위 를 확인하여 값을 입력해주세요.
 
@@ -302,20 +395,32 @@ class Upbit:
             return False
 
     def withdraws(self,**kwargs):
-        """
-        [Description]
-        출금 리스트를 조회한다.
+        """출금 리스트를 조회
 
-        [Params]
-        currency(string) : Currency 코드
-        state(string) : 출금 상태
-        uuids(array of strings) : 출금 UUID의 목록  
-        txids(array of strings) : 출금 TXID의 목록
-        limit(int32) : 요청 개수 (1 ~ 100)
-        page(int32) : 요청 페이지
-        order_by(string) : 정렬
-
-        [Usage]
+        Parameters
+        ---------- 
+        currency : string
+            Currency 코드
+        state : string
+            출금 상태
+        uuids : array of strings
+            출금 UUID의 목록  
+        txids : array of strings
+            출금 TXID의 목록
+        limit : int32
+            요청 개수 (1 ~ 100)
+        page : int32
+            요청 페이지
+        order_by : string
+             정렬
+        
+        Returns
+        -------
+        json
+            출금 리스트 조회 결과
+        
+        Example
+        -------
         ub.withdraws(currency= 'XRP',state='done')
         """
 
@@ -356,16 +461,24 @@ class Upbit:
             return False
 
     def withdraw(self,**kwargs):
-        """
-        [Description]
-        출금 UUID를 통해 개별 출금 정보를 조회한다.
-        
-        [Params]
-        uuid(string) : 출금 UUID
-        txid(string) : 출금 TXID
-        currency(string) : Currency 코드
+        """출금 UUID를 통해 개별 출금 정보를 조회
 
-        [Usage]
+        Parameters
+        ---------- 
+        uuid : string
+            출금 UUID
+        txid : string
+            출금 TXID
+        currency : string
+            Currency 코드
+        
+        Returns
+        -------
+        json
+            개별 출금 정보 조회 결과
+        
+        Example
+        -------
         ub.withdraw(uuid='d17fb771-ebba-4947-8428-ad5fd0b4caf5')
         """
         query = {}
@@ -393,14 +506,20 @@ class Upbit:
             return False
 
     def withdraws_chance(self,**kwargs):
-        """
-        [Description]
-        해당 통화의 가능한 출금 정보를 확인한다.
+        """해당 통화의 가능한 출금 정보를 확인
+    
+        Parameters
+        ---------- 
+        currency : string
+            Currency symbol
         
-        [Params]
-        currency(string) : Currency symbol
-
-        [Usage]
+        Returns
+        -------
+        json
+            해당 통화의 가능한 출금 정보
+        
+        Example
+        -------
         ub.withdraws_chance(currency='BTC')
         """
         query = {}
@@ -428,18 +547,28 @@ class Upbit:
             return False
 
     def withdraws_coin(self,**kwargs):
-        """
-        [Description]
-        코인 출금을 요청한다.
+        """코인 출금을 요청한다.
 
-        [Params]
-        currency(string) : Currency symbol
-        amount(string) : 출금 코인 수량
-        address(string) : 출금 지갑 주소 
-        secondary_address(string) : 2차 출금주소 (필요한 코인에 한해서)
-        transaction_type(string) : 출금 유형
-
-        [Usage]
+        Parameters
+        ---------- 
+        currency : string
+            Currency symbol
+        amount : string
+            출금 코인 수량
+        address : string
+            출금 지갑 주소 
+        secondary_address : string
+            2차 출금주소 (필요한 코인에 한해서)
+        transaction_type : string
+            출금 유형
+        
+        Returns
+        -------
+        json
+            출금 요청 결과
+        
+        Example
+        -------
         ub.withdraws_coin(currency='BTC',amount= '0.01',address='3EusRwybuZUhVDeHL7gh3HSLmbhLcy7NqD')
         """
         query = {}
@@ -467,14 +596,20 @@ class Upbit:
             return False
 
     def withdraws_krw(self,**kwargs):
-        """
-        [Description]
-        원화 출금을 요청한다. 등록된 출금 계좌로 출금된다.
+        """원화 출금을 요청하여 등록된 출금 계좌로 출금
 
-        [Params]
-        amount(string) : 출금 원화 수량
-
-        [Usage]
+        Parameters
+        ---------- 
+        amount : string
+            출금 원화 수량
+        
+        Returns
+        -------
+        json
+            원화 출금 요청 결과
+        
+        Example
+        -------
         ub.withdraws_krw(amount='10000')
         """
         query = {}
@@ -502,20 +637,32 @@ class Upbit:
             return False
 
     def deposits(self,**kwargs):
-        """
-        [Description]
-        입금을 리스트를 요청한다.
+        """입금 리스트를 요청
 
-        [Params]
-        currency(string) : Currency 코드
-        state(string) : 입금 상태
-        uuids(string) : 입금 UUID의 목록
-        txids(array of strings) : 입금 TXID의 목록
-        limit(int32) : 페이지 당 개수
-        page(int32) : 페이지 번호
-        order_by(string) : 정렬 방식
-
-        [Usage]
+        Parameters
+        ---------- 
+        currency : string
+            Currency 코드
+        state : string
+            입금 상태
+        uuids : string
+            입금 UUID의 목록
+        txids : array of strings
+            입금 TXID의 목록
+        limit : int32
+            페이지 당 개수
+        page : int32
+            페이지 번호
+        order_by : string
+            정렬 방식
+        
+        Returns
+        -------
+        json
+            입금 리스트 요청 결과
+        
+        Example
+        -------
         ub.deposits(currency='KRW')
         """
         query = {}
@@ -556,16 +703,24 @@ class Upbit:
 
 
     def deposit(self,**kwargs):
-        """
-        [Description]
-        개별 입금을 조회한다.
+        """개별 입금 조회
 
-        [Params]
-        uuids(string) : 개별 입금의 UUID
-        txids(string) : 개별 입금의 TXID
-        currency(string) : Currency 코드
-
-        [Usage]
+        Parameters
+        ---------- 
+        uuids : string
+            개별 입금의 UUID
+        txids : string
+            개별 입금의 TXID
+        currency : string
+            Currency 코드
+        
+        Returns
+        -------
+        json
+            개별 입금 조회 결과
+        
+        Example
+        -------
         ub.deposit(uuid='94332e99-3a87-4a35-ad98-28b0c969f830')
         """
         query = {}
@@ -593,17 +748,24 @@ class Upbit:
             return False
 
     def deposits_generate_coin_address(self,**kwargs):
-        """
-        [Description]
-        입금 주소 생성을 요청한다.
+        """입금 주소 생성을 요청
 
-        [Params]
-        currency(string) : Currency sysmbol
-
-        [Usage]
+        Parameters
+        ---------- 
+        currency : string
+            Currency sysmbol
+        
+        Returns
+        -------
+        json
+            입금 주소 생성 요청 결과
+        
+        Example
+        -------
         ub.deposits_generate_coin_address(currency='BTC')
 
-        [Warnings]
+        Warnings
+        --------
         입금 주소 생성 요청 API 유의사항
         입금 주소의 생성은 서버에서 비동기적으로 이뤄집니다.
         비동기적 생성 특성상 요청과 동시에 입금 주소가 발급되지 않을 수 있습니다.
@@ -636,11 +798,15 @@ class Upbit:
             return False
 
     def deposits_coin_addresses(self):
-        """
-        [Description]
-        전체 입금 주소를 조회한다.
-
-        [Usage]
+        """전체 입금 주소를 조회
+        
+        Returns
+        -------
+        json
+            전체 입금 주소 조회 결과
+        
+        Example
+        -------
         ub.deposits_coin_addresses()
         """
 
@@ -660,14 +826,20 @@ class Upbit:
             return False
 
     def deposits_coin_address(self,**kwargs):
-        """
-        [Description]
-        개별 입금 주소를 조회한다.
+        """개별 입금 주소를 조회
 
-        [Params]
-        currency(string) : Currency symbol
-
-        [Usage]
+        Parameters
+        ---------- 
+        currency : string
+            Currency sysmbol
+        
+        Returns
+        -------
+        json
+            개별 입금 주소 조회 결과
+        
+        Example
+        -------
         ub.deposits_coin_address(currency='BTC')
         """
         query = {}
@@ -695,14 +867,20 @@ class Upbit:
             return False
 
     def deposits_krw(self,**kwargs):
-        """
-        [Description]
-        원화를 입금한다.
+        """원화를 입금
 
-        [Params]
-        amount(string) : 입금 원화 수량
-
-        [Usage]
+        Parameters
+        ---------- 
+        amount : string
+            입금 원화 수량
+        
+        Returns
+        -------
+        json
+            원화 입금 결과
+        
+        Example
+        -------
         ub.deposits_krw(amount='5000')
         """
         query = {}
@@ -730,11 +908,15 @@ class Upbit:
             return False
 
     def status_wallet(self):
-        """
-        [Description]
-        입출금 현황 및 블록 상태를 조회합니다.
-
-        [Usage]
+        """입출금 현황 및 블록 상태를 조회
+        
+        Returns
+        -------
+        json
+            입출금 현황 및 블록 상태 조회 결과
+        
+        Example
+        -------
         ub.status_wallet()
         """
 
@@ -754,11 +936,15 @@ class Upbit:
             return False
 
     def api_keys(self):
-        """
-        [Description]
-        API 키 목록 및 만료 일자를 조회합니다.
+        """API 키 목록 및 만료 일자를 조회
 
-        [Usage]
+        Returns
+        -------
+        json
+            API 키 목록 및 만료 일자
+        
+        Example
+        -------
         ub.api_keys()
         """
 
@@ -781,14 +967,20 @@ class Upbit:
     QUOTATION API
     '''
     def market_all(self,**kwargs):
-        """
-        [Description]
-        업비트에서 거래 가능한 마켓 목록
+        """업비트에서 거래 가능한 마켓 목록
 
-        [Params]
-        isDetails(boolean) : 유의종목 필드과 같은 상세 정보 노출 여부(선택 파라미터)
+        Parameters
+        ---------- 
+        isDetails : boolean
+            유의종목 필드과 같은 상세 정보 노출 여부(선택 파라미터)
 
-        [Usage]
+        Returns
+        -------
+        json
+            거래 가능한 마켓 목록
+        
+        Example
+        -------
         ub.market_all(istDetails='false')
         """
         query = {}
@@ -816,19 +1008,26 @@ class Upbit:
             return False
 
     def candles_minutes(self,**kwargs):
-        """
-        [Description]
-        분(Minute) 캔들
+        """분(Minute) 캔들
 
-        [Path Params]
-        unit(int32) : 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
+        Parameters
+        ---------- 
+        unit : int32
+            분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
+        market : string
+            마켓 코드 (ex. KRW-BTC)
+        to : string
+            마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
+        count : int32
+            캔들 개수(최대 200개까지 요청 가능)
 
-        [Query Params]
-        market(string) : 마켓 코드 (ex. KRW-BTC)
-        to(string) : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
-        count(int32) : 캔들 개수(최대 200개까지 요청 가능)
-
-        [Usage]
+        Returns
+        -------
+        json
+            분 캔들 조회 결과
+        
+        Example
+        -------
         ub.candles_minutes(unit='1',market='KRW-BTC',count='1')
         """
         query = {}
@@ -850,17 +1049,26 @@ class Upbit:
             return False
 
     def candles_days(self,**kwargs):
-        """
-        [Description]
-        일(day) 캔들
+        """일(day) 캔들
 
-        [Query Params]
-        market(string) : 마켓 코드 (ex. KRW-BTC, BTC-BCC)
-        to(string) : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
-        count(int32) : 캔들 개수
-        convertingPriceUnit(string) : 종가 환산 화폐 단위 (생략 가능, KRW로 명시할 시 원화 환산 가격을 반환.)
+        Parameters
+        ---------- 
+        market : string
+            마켓 코드 (ex. KRW-BTC, BTC-BCC)
+        to : string
+            마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
+        count: int32
+            캔들 개수
+        convertingPriceUnit : string
+            종가 환산 화폐 단위 (생략 가능, KRW로 명시할 시 원화 환산 가격을 반환.)
 
-        [Usage]
+        Returns
+        -------
+        json
+            일 캔들 조회 결과
+        
+        Example
+        -------
         ub.candles_days(market='KRW-BTC',count='1')
         """
         query = {}
@@ -878,16 +1086,24 @@ class Upbit:
             return False
 
     def candles_weeks(self,**kwargs):
-        """
-        [Description]
-        주(week) 캔들
+        """주(week) 캔들
 
-        [Query Params]
-        market(string) : 마켓 코드 (ex. KRW-BTC, BTC-BCC)
-        to(string) : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
-        count(int32) : 캔들 개수
+        Parameters
+        ---------- 
+        market : string
+            마켓 코드 (ex. KRW-BTC, BTC-BCC)
+        to : string
+            마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
+        count : int32
+            캔들 개수
 
-        [Usage]
+        Returns
+        -------
+        json
+            주 캔들 조회 결과
+        
+        Example
+        -------
         ub.candles_weeks(market='KRW-BTC',count='1')
         """
         query = {}
@@ -906,16 +1122,24 @@ class Upbit:
 
 
     def candles_months(self,**kwargs):
-        """
-        [Description]
-        월(Month) 캔들
+        """월(Month) 캔들
 
-        [Query Params]
-        market(string) : 마켓 코드 (ex. KRW-BTC, BTC-BCC)
-        to(string) : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
-        count(int32) : 캔들 개수
+        Parameters
+        ---------- 
+        market : string
+            마켓 코드 (ex. KRW-BTC, BTC-BCC)
+        to : string
+            마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
+        count : int32
+            캔들 개수
 
-        [Usage]
+        Returns
+        -------
+        json
+            월 캔들 조회 결과
+        
+        Example
+        -------
         ub.candles_months(market='KRW-BTC',count='1')
         """
         query = {}
@@ -933,18 +1157,28 @@ class Upbit:
             return False
 
     def trades_ticks(self,**kwargs):
-        """
-        [Description]
-        최근 체결 내역
+        """최근 체결 내역
 
-        [Query Params]
-        market(string) : 마켓 코드 (ex. KRW-BTC, BTC-BCC)
-        to(string) : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
-        count(int32) : 체결 개수
-        cursor(string) : 페이지네이션 커서 (sequentialId)
-        daysAgo(int32) : 최근 체결 날짜 기준 7일 이내의 이전 데이터 조회 가능. 비워서 요청 시 가장 최근 체결 날짜 반환. (범위: 1 ~ 7))
+        Parameters
+        ---------- 
+        market : string
+            마켓 코드 (ex. KRW-BTC, BTC-BCC)
+        to : string
+            마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss. 비워서 요청시 가장 최근 캔들
+        count : int32
+            체결 개수
+        cursor : string
+            페이지네이션 커서 (sequentialId)
+        daysAgo : int32
+            최근 체결 날짜 기준 7일 이내의 이전 데이터 조회 가능. 비워서 요청 시 가장 최근 체결 날짜 반환. (범위: 1 ~ 7))
 
-        [Usage]
+        Returns
+        -------
+        json
+            최근 체결 내역
+        
+        Example
+        -------
         ub.trades_ticks(market='KRW-BTC',count='1')
         """
         query = {}
@@ -963,14 +1197,20 @@ class Upbit:
 
 
     def ticker(self,**kwargs):
-        """
-        [Description]
-        요청 당시 종목의 스냅샷을 반환한다.
+        """요청 당시 종목의 스냅샷을 반환
 
-        [Query Params]
-        markets(string) : 반점으로 구분되는 마켓 코드 (ex. KRW-BTC, BTC-BCC)
+        Parameters
+        ---------- 
+        markets : string
+            반점으로 구분되는 마켓 코드 (ex. KRW-BTC, BTC-BCC)
 
-        [Usage]
+        Returns
+        -------
+        json
+            요청 당시 종목의 스냅샷 반환
+        
+        Example
+        -------
         ub.ticker(markets='KRW-BTC')
         """
         query = {}
@@ -988,14 +1228,20 @@ class Upbit:
             return False
 
     def orderbook(self,**kwargs):
-        """
-        [Description]
-        호가 정보를 조회한다.
+        """호가 정보를 조회
 
-        [Query Params]
-        markets(string) : 반점으로 구분되는 마켓 코드 (ex. KRW-BTC, BTC-BCC)
+        Parameters
+        ---------- 
+        markets : string
+            반점으로 구분되는 마켓 코드 (ex. KRW-BTC, BTC-BCC)
 
-        [Usage]
+        Returns
+        -------
+        json
+            호가 정보 조회
+        
+        Example
+        -------
         ub.orderbook(markets='KRW-BTC')
         """
         query = {}
