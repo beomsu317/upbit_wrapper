@@ -1,15 +1,11 @@
-# https://docs.upbit.com/docs/upbit-quotation-websocket
-
-import json
-import time
-import logging
 from websocket import WebSocketApp
 from threading import Thread
-
+import json
+import time
 class UpbitWebSocket:
-    def __init__(self, request):
+    def __init__(self, request, callback=print):
         self.request = request
-        self.logger = logging.getLogger("UpbitWebSocket")
+        self.callback = callback
         self.ws = WebSocketApp(
             url="wss://api.upbit.com/websocket/v1",
             on_message=lambda ws, msg: self.on_message(ws, msg),
@@ -20,15 +16,15 @@ class UpbitWebSocket:
     
     def on_message(self, ws, msg):
         msg = json.loads(msg.decode('utf-8'))
-        self.logger.debug(msg)
+        self.callback(msg)
     
     def on_error(self, ws, msg):
-        self.logger.error(msg)
+        self.callback(msg)
     
     def on_close(self, ws):
-        self.logger.info("closed")
+        self.callback("closed")
         self.running = False
-    
+
     def on_open(self, ws):
         th = Thread(target=self.activate, daemon=True)
         th.start()
@@ -36,9 +32,17 @@ class UpbitWebSocket:
     def activate(self):
         self.ws.send(self.request)
         while self.running:
-            time.sleep(5)
+            time.sleep(1)
         self.ws.close()
     
     def start(self):
         self.running = True
         self.ws.run_forever()
+
+def aa(bb):
+    print(bb)
+
+if __name__ == "__main__":
+    request='[{"ticket":"KRT-BTC"},{"type":"ticker","codes":["KRW-BTC"]}]'
+    real = UpbitWebSocket(request=request,callback=aa)
+    real.start()
